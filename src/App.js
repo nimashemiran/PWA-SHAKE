@@ -1,46 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Shake from 'shake.js';
 
 function App() {
-  const [bgColor, setBgColor] = useState('white');
+  const [result, setResult] = useState('');
 
   useEffect(() => {
-    const myShakeEvent = new Shake({
-      threshold: 15, // شدت لرزش برای تشخیص
-      timeout: 1000 // زمان بین دو لرزش متوالی
-    });
+    const handleOrientation = (event) => {
+      const { alpha, beta, gamma } = event;
 
-    myShakeEvent.start();
+      if ((alpha === 90 && beta === 0 && gamma === -90) || (alpha === 90 && beta === -180 && gamma === -90)) {
+        setResult('2 + 2 = 4');
+      } else {
+        setResult('2 - 2 = 0');
+      }
+    };
 
-    window.addEventListener('shake', shakeEventDidOccur, false);
-
-    function shakeEventDidOccur() {
-      // تغییر رنگ پس‌زمینه
-      setBgColor(getRandomColor());
-    }
+    window.addEventListener('deviceorientation', handleOrientation);
 
     return () => {
-      myShakeEvent.stop();
-      window.removeEventListener('shake', shakeEventDidOccur, false);
+      window.removeEventListener('deviceorientation', handleOrientation);
     };
   }, []);
 
-  function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
   return (
-    <div className="App" style={{ backgroundColor: bgColor }}>
-      <h1>Shake Challenge</h1>
+    <div className="App">
+      <h1>{result}</h1>
     </div>
   );
 }
 
 export default App;
 
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import './App.css';
+
+// function App() {
+//   const [orientation, setOrientation] = useState('عمودی');
+
+//   useEffect(() => {
+//     const handleOrientation = (event) => {
+//       const { beta } = event;
+//       // beta در حدود 0 یعنی دستگاه در حالت افقی است
+//       // beta در حدود ±90 یعنی دستگاه در حالت عمودی است
+//       if (beta > 45 || beta < -45) {
+//         setOrientation('عمودی');
+//       } else {
+//         setOrientation('افقی');
+//       }
+//     };
+
+//     window.addEventListener('deviceorientation', handleOrientation);
+
+//     return () => {
+//       window.removeEventListener('deviceorientation', handleOrientation);
+//     };
+//   }, []);
+
+//   return (
+//     <div className="App">
+//       <h1>جهت دستگاه: {orientation}</h1>
+//     </div>
+//   );
+// }
+
+// export default App;
